@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // DOM Elements
     const refreshBtn = document.getElementById('refresh-btn');
     const refreshIcon = document.getElementById('refresh-icon');
+    const exportCsvBtn = document.getElementById('export-csv-btn');
     const notesContainer = document.getElementById('notes-container');
     const errorContainer = document.getElementById('error-container');
     const errorMessage = document.getElementById('error-message');
@@ -18,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const shareTweetBtn = document.getElementById('share-tweet-btn');
 
     let selectedItemData = null;
+    let currentEntries = [];
 
     // Initialize
     fetchReleaseNotes();
@@ -25,6 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Event Listeners
     refreshBtn.addEventListener('click', fetchReleaseNotes);
     retryBtn.addEventListener('click', fetchReleaseNotes);
+    exportCsvBtn.addEventListener('click', exportToCsv);
     closeDrawerBtn.addEventListener('click', closeTweetDrawer);
     
     tweetTextarea.addEventListener('input', updateCharCount);
@@ -89,7 +92,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error(errorData.error || 'Server responded with an error status.');
             }
             const data = await response.json();
-            renderReleaseNotes(data.entries);
+            currentEntries = data.entries || [];
+            renderReleaseNotes(currentEntries);
         } catch (error) {
             console.error('Fetch error:', error);
             showError(error.message);
@@ -144,17 +148,54 @@ document.addEventListener('DOMContentLoaded', () => {
                 card.innerHTML = `
                     <div class="note-card-header">
                         <span class="badge ${badgeClass}">${item.type}</span>
-                        <div class="card-tweet-indicator" title="Tweet this update">
-                            <i class="fa-brands fa-twitter"></i>
+                        <div class="card-actions">
+                            <button class="card-action-btn copy-btn" title="Copy to clipboard">
+                                <i class="fa-regular fa-copy"></i>
+                            </button>
+                            <button class="card-action-btn tweet-btn" title="Tweet this update">
+                                <i class="fa-brands fa-twitter"></i>
+                            </button>
                         </div>
                     </div>
                     <div class="note-card-content">${item.body}</div>
                 `;
 
-                // Card Click Handlers
+                // Copy to clipboard handler
+                const copyBtn = card.querySelector('.copy-btn');
+                copyBtn.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Prevent card selection click trigger
+                    
+                    // Extract plain text content of the card
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = item.body;
+                    const plainText = tempDiv.textContent.trim();
+                    const formattedText = `[BigQuery Release - ${item.type} (${entry.title})]\n${plainText}`;
+                    
+                    navigator.clipboard.writeText(formattedText).then(() => {
+                        copyBtn.classList.add('copied');
+                        copyBtn.innerHTML = '<i class="fa-solid fa-check"></i>';
+                        setTimeout(() => {
+                            copyBtn.classList.remove('copied');
+                            copyBtn.innerHTML = '<i class="fa-regular fa-copy"></i>';
+                        }, 2000);
+                    }).catch(err => {
+                        console.error('Failed to copy text: ', err);
+                    });
+                });
+
+                // Tweet button click handler
+                const tweetBtn = card.querySelector('.tweet-btn');
+                tweetBtn.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Prevent double trigger
+                    document.querySelectorAll('.note-card').forEach(c => c.classList.remove('selected'));
+                    card.classList.add('selected');
+                    openTweetDrawer(entry.title, item);
+                });
+
+                // Card Click Handlers (General card body click triggers selection & drawer)
                 card.addEventListener('click', (e) => {
-                    // Prevent drawer trigger if clicking links inside card content
-                    if (e.target.tagName === 'A') return;
+                    // Prevent drawer trigger if clicking links inside card content or other interactive elements
+                    if (e.target.tagName === 'A' || e.target.closest('.card-action-btn')) return;
                     
                     // Toggle selection state
                     document.querySelectorAll('.note-card').forEach(c => c.classList.remove('selected'));
@@ -276,5 +317,45 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             shareTweetBtn.disabled = false;
         }
+    }
+
+    // Export entire loaded dataset as CSV
+    function exportToCsv() {
+        if (!currentEntries || currentEntries.length === 0) {
+            alert('No release notes available to export.');
+            return;
+        }
+
+        const csvRows = [];
+        // Header
+        csvRows.push(['Date', 'Type', 'Content', 'Link'].map(val => `"${val.replace(/"/g, '""')}"`).join(','));
+
+        currentEntries.forEach(entry => {
+            const items = parseHtmlContent(entry.content);
+            items.forEach(item => {
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = item.body;
+                const plainText = tempDiv.textContent.trim().replace(/\s+/g, ' '); // Clean whitespaces
+                
+                const dateVal = entry.title;
+                const typeVal = item.type;
+                const contentVal = plainText;
+                const linkVal = entry.link || '';
+
+                const row = [dateVal, typeVal, contentVal, linkVal].map(val => `"${val.replace(/"/g, '""')}"`).join(',');
+                csvRows.push(row);
+            });
+        });
+
+        const csvContent = "data:text/csv;charset=utf-8," + csvRows.join("\n");
+        const encodedUri = encodeURI(csvContent);
+        
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `bigquery_release_notes_${new Date().toISOString().slice(0,10)}.csv`);
+        document.body.appendChild(link);
+        
+        link.click();
+        document.body.removeChild(link);
     }
 });

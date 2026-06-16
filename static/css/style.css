@@ -383,18 +383,43 @@ body {
     background: var(--bg-default);
 }
 
-.card-tweet-indicator {
+.card-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.card-action-btn {
+    background: none;
+    border: none;
     color: var(--text-muted);
-    transition: var(--transition-fast);
+    cursor: pointer;
     font-size: 0.9rem;
+    padding: 6px;
+    border-radius: 6px;
+    transition: var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.note-card:hover .card-tweet-indicator {
+.card-action-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.card-action-btn.copy-btn:hover {
+    color: var(--google-blue);
+}
+
+.card-action-btn.copy-btn.copied {
+    color: var(--color-default) !important;
+}
+
+.card-action-btn.tweet-btn:hover {
     color: var(--twitter-cyan);
-    transform: scale(1.15);
 }
 
-.note-card.selected .card-tweet-indicator {
+.note-card.selected .card-action-btn.tweet-btn {
     color: var(--twitter-cyan);
 }
 
