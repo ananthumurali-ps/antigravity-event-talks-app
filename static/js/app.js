@@ -18,8 +18,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const charCounter = document.getElementById('char-counter');
     const shareTweetBtn = document.getElementById('share-tweet-btn');
 
+    // Theme Toggle Elements
+    const themeToggleBtn = document.getElementById('theme-toggle-btn');
+    const themeToggleIcon = document.getElementById('theme-toggle-icon');
+
     let selectedItemData = null;
     let currentEntries = [];
+
+    // Load stored theme
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    if (savedTheme === 'light') {
+        document.body.classList.add('light-theme');
+        themeToggleIcon.className = 'fa-regular fa-moon';
+    }
 
     // Initialize
     fetchReleaseNotes();
@@ -29,6 +40,13 @@ document.addEventListener('DOMContentLoaded', () => {
     retryBtn.addEventListener('click', fetchReleaseNotes);
     exportCsvBtn.addEventListener('click', exportToCsv);
     closeDrawerBtn.addEventListener('click', closeTweetDrawer);
+    
+    themeToggleBtn.addEventListener('click', () => {
+        document.body.classList.toggle('light-theme');
+        const isLight = document.body.classList.contains('light-theme');
+        localStorage.setItem('theme', isLight ? 'light' : 'dark');
+        themeToggleIcon.className = isLight ? 'fa-regular fa-moon' : 'fa-regular fa-sun';
+    });
     
     tweetTextarea.addEventListener('input', updateCharCount);
 

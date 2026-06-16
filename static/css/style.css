@@ -750,3 +750,106 @@ body {
         border-radius: var(--radius-lg) var(--radius-lg) 0 0;
     }
 }
+
+/* Light Theme Variables & Overrides */
+body.light-theme {
+    --bg-color: #f8fafc;
+    --card-bg: rgba(255, 255, 255, 0.85);
+    --card-border: rgba(0, 0, 0, 0.08);
+    --card-hover-border: rgba(66, 133, 244, 0.6);
+    
+    --text-primary: #0f172a;
+    --text-secondary: #334155;
+    --text-muted: #64748b;
+    
+    --google-blue-glow: rgba(66, 133, 244, 0.08);
+}
+
+body.light-theme .background-grid {
+    background-image: 
+        linear-gradient(rgba(0, 0, 0, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 0, 0, 0.02) 1px, transparent 1px);
+}
+
+body.light-theme .glow-orb {
+    opacity: 0.15;
+}
+
+body.light-theme .app-header {
+    background: rgba(248, 250, 252, 0.8);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+body.light-theme .day-group {
+    background: rgba(255, 255, 255, 0.65);
+    border-color: rgba(0, 0, 0, 0.06);
+    box-shadow: 0 8px 32px rgba(15, 23, 42, 0.04);
+}
+
+body.light-theme .day-header {
+    border-bottom: 1px dashed rgba(0, 0, 0, 0.08);
+}
+
+body.light-theme .day-title {
+    color: #0f172a;
+}
+
+body.light-theme .day-notes-count {
+    background: rgba(0, 0, 0, 0.04);
+    border-color: rgba(0, 0, 0, 0.06);
+    color: var(--text-secondary);
+}
+
+body.light-theme .card-action-btn:hover {
+    background: rgba(0, 0, 0, 0.04);
+}
+
+body.light-theme .tweet-drawer {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(0, 0, 0, 0.1);
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.12);
+    border-top: 1px solid rgba(66, 133, 244, 0.2);
+}
+
+body.light-theme .drawer-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    background: rgba(0, 0, 0, 0.02);
+}
+
+body.light-theme .drawer-header h3 {
+    color: var(--google-blue);
+}
+
+body.light-theme .btn-close {
+    color: var(--text-muted);
+}
+
+body.light-theme .btn-close:hover {
+    color: #0f172a;
+}
+
+body.light-theme .selected-note-preview {
+    background: rgba(0, 0, 0, 0.02);
+    border-left: 3px solid var(--badge-color, var(--google-blue));
+}
+
+body.light-theme .tweet-composer-field textarea {
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    color: #0f172a;
+}
+
+body.light-theme .tweet-composer-field textarea:focus {
+    border-color: var(--google-blue);
+    box-shadow: 0 0 10px rgba(66, 133, 244, 0.1);
+}
+
+body.light-theme .drawer-footer {
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+    background: rgba(0, 0, 0, 0.02);
+}
+
+body.light-theme .app-footer {
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
