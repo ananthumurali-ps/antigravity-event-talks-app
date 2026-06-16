@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BigQuery Release Notes Radar</title>
+    <meta name="description" content="Stay up to date with the latest BigQuery release notes and updates. Select and tweet any update with ease.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="background-grid"></div>
+    <div class="glow-orb glow-1"></div>
+    <div class="glow-orb glow-2"></div>
+
+    <header class="app-header">
+        <div class="header-container">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fa-solid fa-database"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>BigQuery <span>Radar</span></h1>
+                    <p class="tagline">Interactive Release Tracker</p>
+                </div>
+            </div>
+            
+            <div class="header-actions">
+                <button id="refresh-btn" class="btn btn-primary" title="Refresh Release Notes">
+                    <i id="refresh-icon" class="fa-solid fa-arrows-rotate"></i>
+                    <span>Refresh</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="app-container">
+        <!-- Error Panel -->
+        <div id="error-container" class="error-panel hidden">
+            <div class="error-icon">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <div class="error-content">
+                <h3>Failed to load release notes</h3>
+                <p id="error-message">Connection timed out or failed to reach the server.</p>
+                <button id="retry-btn" class="btn btn-secondary btn-sm">Try Again</button>
+            </div>
+        </div>
+
+        <!-- Feed Content Area -->
+        <div id="notes-container" class="notes-grid">
+            <!-- Skeleton items will be dynamically injected here, followed by loaded notes -->
+        </div>
+    </main>
+
+    <!-- Floating Tweet Composer Panel -->
+    <div id="tweet-drawer" class="tweet-drawer hidden">
+        <div class="drawer-header">
+            <h3><i class="fa-brands fa-twitter"></i> Tweet Composer</h3>
+            <button id="close-drawer" class="btn-close" title="Close"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="drawer-body">
+            <div class="selected-note-preview">
+                <div class="preview-meta">
+                    <span id="preview-date" class="preview-date">June 15, 2026</span>
+                    <span id="preview-type" class="badge badge-feature">Feature</span>
+                </div>
+                <div id="preview-text" class="preview-text">
+                    Use Gemini Cloud Assist to analyze your SQL queries and receive recommendations to optimize query performance in BigQuery...
+                </div>
+            </div>
+            <div class="tweet-composer-field">
+                <label for="tweet-textarea">Customize your Tweet</label>
+                <textarea id="tweet-textarea" rows="4" maxlength="280" placeholder="What's happening?"></textarea>
+                <div class="char-count-container">
+                    <span id="char-counter">0 / 280</span>
+                </div>
+            </div>
+        </div>
+        <div class="drawer-footer">
+            <button id="share-tweet-btn" class="btn btn-twitter w-full">
+                <i class="fa-brands fa-twitter"></i> Post to Twitter
+            </button>
+        </div>
+    </div>
+
+    <!-- Instructions banner/tip at the bottom -->
+    <footer class="app-footer">
+        <p>BigQuery Radar &bull; Built with Flask &amp; Modern Vanilla CSS/JS</p>
+        <p class="footer-tip"><i class="fa-regular fa-lightbulb"></i> Tip: Click on any specific card/update to highlight it and open the Tweet composer!</p>
+    </footer>
+
+    <!-- Custom JavaScript -->
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
